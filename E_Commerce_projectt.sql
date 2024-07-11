@@ -177,9 +177,10 @@ Describe category;
                                    FROM 
                                 	    orders T1
                                    JOIN 
-                                        Payments T2 ON  T1.PaymentID=T2.PaymentID
-                                   GROUP BY T2.PaymentType)
-                                   SELECT PaymentType,CNT FROM TOP WHERE RNK =1;
+                                        Payments T2 
+			                    ON  T1.PaymentID=T2.PaymentID
+		                                   GROUP BY T2.PaymentType)
+		                                   SELECT PaymentType,CNT FROM TOP WHERE RNK =1;
                                    
                     -------------- OR ---------------------
                        
