@@ -16,8 +16,8 @@ Describe category;
 
    -- =>
    select  year(DateEntered) As Year,count(*) As No_Of_Customers 
-                        							From customers 
-                        							Group By  year(DateEntered);
+                        					From customers 
+                        					        Group By  year(DateEntered);
                                                     
 -- 2.	Segment the customers into “New” and “Old” categories. Tag the customer as “New” if his database stored date is greater than “1st July 2020” 
 --  customer as “Old”.Also, find the count of customers in both the categories.       
@@ -49,11 +49,11 @@ Describe category;
 		    Count(*) AS 'NO_of_orders',
 			Sum(t3.Total_order_amount) AS 'Total_of_order_AMT'
 								  FROM products T1 
-													JOIN orderdetails T2
-														ON T1.ProductID = T2.ProductID 
-													JOIN orders T3
-														ON T2.orderid = T3. orderid
-																				WHERE Year(T3.OrderDate)= 2021
+									JOIN orderdetails T2
+										ON T1.ProductID = T2.ProductID 
+									JOIN orders T3
+										ON T2.orderid = T3. orderid
+									            WHERE Year(T3.OrderDate)= 2021
 																				GROUP BY T1.ProductId,T1.product
 																				ORDER BY COUNT(*) desc 
 																				LIMIT 1;
@@ -65,79 +65,78 @@ Describe category;
     SELECT  T1.CompanyName As 'Least_Selling_SupplierID',
             COUNT(*) AS 'NO_of_orders' 
                                  FROM Suppliers T1 
-											 JOIN orderdetails T2
-												  ON T1.SupplierID = T2.SupplierID 
-											 JOIN orders T3
-												  ON T2.orderid = T3. orderid
-																		WHERE Year(T3.OrderDate)= 2021
-																		GROUP BY T1.SupplierID,T1.CompanyName
-																		ORDER BY COUNT(*) 
-																		LIMIT 1;
-                                                                        
-                                                                     
+					 JOIN orderdetails T2
+						  ON T1.SupplierID = T2.SupplierID 
+					 JOIN orders T3
+						  ON T2.orderid = T3. orderid
+							WHERE Year(T3.OrderDate)= 2021
+							GROUP BY T1.SupplierID,T1.CompanyName
+							ORDER BY COUNT(*) 
+							LIMIT 1;
+			
+		     
                                                                         
 -- 6.  The company is tying up with a Bank for providing offers to a certain set of premium customers only. 
-        # We want to know those CustomerIDs who have ordered for a total amount of more than 70000 in the past 3 months.
+        --We want to know those CustomerIDs who have ordered for a total amount of more than 70000 in the past 3 months.
 
 -- =>
        
        SELECT CustomerID,
 	            ROUND(SUM(Total_order_amount)) as 'Total_order_amount'
-															 FROM orders
-																		 WHERE orderdate = DATE_SUB(CURDATE(), INTERVAL 3 MONTH)
-																		 GROUP BY CustomerID
-																		 HAVING SUM(Total_order_amount)>7000;
-                                                             
+							FROM orders
+								 WHERE orderdate = DATE_SUB(CURDATE(), INTERVAL 3 MONTH)
+								 GROUP BY CustomerID
+								 HAVING SUM(Total_order_amount)>7000;
+
 -- 6. The leadership wants to know which is their top-selling category and least-selling category in 2021.
       
--- => 
-		 SELECT 
-                 T1.CategoryName AS 'Least_Selling_Category',
+-- =>  
+        SELECT  T1.CategoryName AS 'Least_Selling_Category',
                 ( 
                     SELECT T1.CategoryName
-            					FROM Category T1 
-            								JOIN Products T2 
-            										ON T1.Categoryid = T2.Category_id 
-            								JOIN orderdetails T3 
-            										ON T3.Productid = T2.Productid
-            								JOIN Orders T4
-            										ON T4.orderid = T3.orderid
-            											WHERE YEAR(T4.orderdate) = 2021  
-            											GROUP BY T1.CategoryName
-            											ORDER BY SUM(T4.Total_order_amount) DESC 
-            											LIMIT 1 ) AS 'Top_Selling_Category'
-            															FROM Category T1 
-            																	JOIN Products T2 
-                                                                                     ON T1.Categoryid = T2.Category_id 																								
-            																    JOIN orderdetails T3 
-                                                                                     ON T3.Productid = T2.Productid																								
-            																	JOIN Orders T4 
-            																		ON T4.orderid = T3.orderid																								
-            																				WHERE YEAR(T4.orderdate) = 2021																								
-            																				GROUP BY T1.CategoryName																								
-            																				ORDER BY SUM(T4.Total_order_amount) 
-            																				LIMIT 1;
+            				FROM Category T1 
+					JOIN Products T2 
+							ON T1.Categoryid = T2.Category_id 
+					JOIN orderdetails T3 
+							ON T3.Productid = T2.Productid
+					JOIN Orders T4
+							ON T4.orderid = T3.orderid
+								WHERE YEAR(T4.orderdate) = 2021  
+								GROUP BY T1.CategoryName
+								ORDER BY SUM(T4.Total_order_amount) DESC 
+								LIMIT 1 ) AS 'Top_Selling_Category'
+												FROM Category T1 
+														JOIN Products T2 
+						                                                                    ON T1.Categoryid = T2.Category_id 																								
+													    JOIN orderdetails T3 
+						                                                                    ON T3.Productid = T2.Productid																								
+														JOIN Orders T4 
+															ON T4.orderid = T3.orderid																								
+																	WHERE YEAR(T4.orderdate) = 2021																								
+																	GROUP BY T1.CategoryName																								
+																	ORDER BY SUM(T4.Total_order_amount) 
+																	LIMIT 1;
 
 ------------------- OR ---------------------------
 
 -- => 
         WITH CategorySales AS (
-							SELECT T1.CategoryName,
-								RANK() OVER (ORDER BY SUM(T4.Total_order_amount) DESC) AS SalesRankDesc,
-								RANK() OVER (ORDER BY SUM(T4.Total_order_amount)) AS SalesRankAsc
-									FROM Category T1
-									JOIN Products T2 
-										 ON T1.Categoryid = T2.Category_id
-									JOIN orderdetails T3 
-										 ON T3.Productid = T2.Productid
-									JOIN Orders T4 
-										 ON T4.orderid = T3.orderid
-																WHERE YEAR(T4.orderdate) = 2021
-																GROUP BY T1.CategoryName)
-																		SELECT 
-																			(SELECT CategoryName FROM CategorySales WHERE SalesRankDesc = 1) AS 'Top_Selling_Category',
-																			(SELECT CategoryName FROM CategorySales WHERE SalesRankAsc = 1) AS 'Least_Selling_Category';
-    
+		SELECT T1.CategoryName,
+			RANK() OVER (ORDER BY SUM(T4.Total_order_amount) DESC) AS SalesRankDesc,
+			RANK() OVER (ORDER BY SUM(T4.Total_order_amount)) AS SalesRankAsc
+				FROM Category T1
+				JOIN Products T2 
+					 ON T1.Categoryid = T2.Category_id
+				JOIN orderdetails T3 
+					 ON T3.Productid = T2.Productid
+				JOIN Orders T4 
+					 ON T4.orderid = T3.orderid
+								WHERE YEAR(T4.orderdate) = 2021
+								GROUP BY T1.CategoryName)
+										SELECT 
+											(SELECT CategoryName FROM CategorySales WHERE SalesRankDesc = 1) AS 'Top_Selling_Category',
+											(SELECT CategoryName FROM CategorySales WHERE SalesRankAsc = 1) AS 'Least_Selling_Category';
+
 -- 8.	We need to flag the Shipper companies whose average delivery time is less than 3 days to incentivize them.
 
 -- =>          
@@ -187,12 +186,12 @@ Describe category;
 -- =>   
                      select T2.PaymentType,
                     		COUNT(*) AS CNT 
-                    				   FROM Orders T1  
-                    				   JOIN Payments T2
-                    						 ON T1.PaymentID = T2.PaymentID 
-                    							   group by T2.PaymentType 
-                    							   ORDER BY CNT DESC		
-                    							   LIMIT 1;
+					   FROM Orders T1  
+					   JOIN Payments T2
+							 ON T1.PaymentID = T2.PaymentID 
+								   group by T2.PaymentType 
+								   ORDER BY CNT DESC		
+								   LIMIT 1;
                     
 -- 11.	Write a query to show the number of customers, number of orders placed, and total order amount per month in the year 2021. Assume that we are only interested 
         --  in the monthly reports for a single year (January-December).
@@ -202,10 +201,10 @@ Describe category;
                         	   COUNT(*) 'No_Of_Orders',
                                COUNT(distinct(CUSTOMERID)) 'No_Of_Customers',
                                Round(SUM(Total_order_amount),2) 'Total_Order_Amount'  
-                        											   FROM orders 
-                        											   WHERE YEAR(OrderDate)=2021													  
-                        											   GROUP BY MONTH(OrderDate),MONTHNAME(OrderDate) ;
-                        														
+								   FROM orders 
+								   WHERE YEAR(OrderDate)=2021													  
+								   GROUP BY MONTH(OrderDate),MONTHNAME(OrderDate) ;
+											
                         
 -- 12.	Derive a monthly cumulative sum of total order amounts for the year 2021,showcase month-wise aggregation and cumulative 
         -- totals for analytical purposes.
@@ -213,14 +212,14 @@ Describe category;
 -- => 
 		SELECT Monthwise,
 			   SUM(Total) OVER(ORDER BY month) 'Monthly_Growth' 
-																FROM 
-																	(select month(orderdate) 'Month',monthname(orderdate) Monthwise,
-																			SUM(Total_order_amount) 'Total'
-																				from orders																			
-																				WHERE YEAR(OrderDate) = 2021
-																				GROUP BY 
-																				month(orderdate), Monthwise)  T1 ;	 
-																						  
+									FROM 
+									   (select month(orderdate) 'Month',monthname(orderdate) Monthwise,
+												SUM(Total_order_amount) 'Total'
+													from orders																			
+													WHERE YEAR(OrderDate) = 2021
+													GROUP BY 
+													month(orderdate), Monthwise)  T1 ;	 
+															  
                     															
 -- 13. Find Category with highest revenue.
 
@@ -228,11 +227,11 @@ Describe category;
 	SELECT distinct t3.Category_ID,
 					SUM(t1.Total_order_amount) AS SUMM
 						  FROM Orders T1 
-										JOIN Orderdetails T2 
-											  on T1.orderid=T2.orderid
-										JOIN Products T3 
-											  ON T2.ProductId = T3.ProductID
-													group by t3.Category_ID
-													order by summ desc
-													LIMIT 1;
-					
+							JOIN Orderdetails T2 
+								  on T1.orderid=T2.orderid
+							JOIN Products T3 
+								  ON T2.ProductId = T3.ProductID
+										group by t3.Category_ID
+										order by summ desc
+										LIMIT 1;
+		
