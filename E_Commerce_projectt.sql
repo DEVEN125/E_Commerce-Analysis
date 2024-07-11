@@ -1,6 +1,5 @@
 
 Use E_Commerce;
-
 Describe customers;
 Describe orders;
 Describe products;
