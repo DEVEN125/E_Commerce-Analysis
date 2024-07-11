@@ -177,8 +177,8 @@
                         											   GROUP BY MONTH(OrderDate),MONTHNAME(OrderDate) ;
                         														
                         
--- 12.	Derive a monthly cumulative sum of total order amounts for the year 2021, 
--- showcase month-wise aggregation and cumulative totals for analytical purposes.
+-- 12.	Derive a monthly cumulative sum of total order amounts for the year 2021,showcase month-wise aggregation and cumulative 
+        totals for analytical purposes.
 
                     => SELECT Monthwise,
                     	   SUM(Total) OVER(ORDER BY month) 'Monthly_Growth' 
