@@ -1,2 +1,2 @@
 # E_Commerce-Analysis
-Data Analysis Projects using MySQL on E-commerce Schemas This repository data analysis projects using MySQL,focused on e-commerce schema. This projects showcase the power of SQL in extracting meaningful insights from large datasets.project includes detailed SQL queries and explanations.
+This project demonstrates advanced data analysis techniques using MySQL on an e-commerce schema. It includes detailed SQL queries to extract customer insights, analyze sales trends, assess supplier and shipper performance, and identify top-selling categories and payment methods, showcasing the power of SQL in deriving actionable insights from large datasets.
